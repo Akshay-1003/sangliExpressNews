@@ -1,0 +1,255 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 50, 50, 50; /* Very light gray, close to white */
+  --background-start-rgb: 240, 240, 240;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-end-rgb: 50, 50, 50; /* Dark gray for dark mode */
+    --foreground-rgb: 50, 50, 50; /* Very light gray, close to white */
+    --background-end-rgb: 255, 255, 255;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-start-rgb));
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* ==== FORM */
+  .radio-group {
+    @apply flex h-full flex-1 items-center gap-2 rounded-md border border-dashed p-3;
+  }
+
+  .radio-circle {
+    @apply min-w-4;
+  }
+
+  .checkbox-label {
+    @apply cursor-pointer text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 md:leading-none;
+  }
+
+  /* ===== TYPOGRAPHY */
+  .text-36-bold {
+    @apply text-[36px] leading-[40px] font-bold;
+  }
+
+  .text-24-bold {
+    @apply text-[24px] leading-[28px] font-bold;
+  }
+
+  .text-32-bold {
+    @apply text-[32px] leading-[36px] font-bold;
+  }
+
+  .text-18-bold {
+    @apply text-[18px] leading-[24px] font-bold;
+  }
+
+  .text-16-semibold {
+    @apply text-[16px] leading-[20px] font-semibold;
+  }
+
+  .text-16-regular {
+    @apply text-[16px] leading-[20px] font-normal;
+  }
+
+  .text-14-medium {
+    @apply text-[14px] leading-[18px] font-medium;
+  }
+
+  .text-14-regular {
+    @apply text-[14px] leading-[18px] font-normal;
+  }
+
+  .text-12-regular {
+    @apply text-[12px] leading-[16px] font-normal;
+  }
+
+  .text-12-semibold {
+    @apply text-[12px] leading-[16px] font-semibold;
+  }
+
+  .header {
+    @apply text-32-bold md:text-36-bold;
+  }
+
+  .sub-header {
+    @apply text-18-bold md:text-24-bold;
+  }
+
+  .container {
+    @apply relative flex-1 overflow-y-auto px-[5%];
+  }
+
+  .sub-container {
+    @apply mx-auto flex size-full flex-col py-10;
+  }
+
+  .side-img {
+    @apply hidden h-full object-cover md:block;
+  }
+
+  /* =====  SHADCN OVERRIDES */
+
+  .shad-textArea {
+    @apply focus-visible:ring-0 focus-visible:ring-offset-0 !important;
+  }
+
+  .shad-input-label {
+    @apply text-14-medium !important;
+  }
+
+  .shad-input {
+    @apply h-11 focus-visible:ring-0 focus-visible:ring-offset-0;
+  }
+
+  .shad-input-icon {
+    @apply h-11 focus-visible:ring-0 focus-visible:ring-offset-0 !important;
+  }
+
+  .shad-error {
+    @apply text-red-400 !important;
+  }
+
+  .shad-select-trigger {
+    @apply h-11 focus:ring-0 focus:ring-offset-0 !important;
+  }
+
+  .shad-select-content {
+    @apply !important;
+  }
+
+  /* ==== File Upload */
+  .file-upload {
+    @apply text-12-regular flex cursor-pointer bg-white flex-col items-center justify-center rounded-md border border-dashed;
+  }
+
+  .file-upload_label {
+    @apply flex flex-col justify-center gap-2 text-center;
+  }
+
+  /* =====  REACT PHONE NUMBER INPUT OVERRIDES */
+  .input-phone {
+    @apply mt-2 h-11 rounded-md px-3 text-sm border !important;
+  }
+
+  /* =====  REACT DATE PICKER OVERRIDES */
+  .date-picker {
+    @apply overflow-hidden border-transparent w-full h-11 text-14-medium rounded-md px-3 outline-none !important;
+  }
+  .custom-datepicker input {
+    @apply border border-gray-100 rounded-md;
+  }
+
+  .custom-datepicker input:focus {
+    @apply border border-gray-100 rounded-md;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 258 64% 53%; /* Equivalent to #5135DB in HSL */
+    --primary-foreground: 240 100% 99%; /* Equivalent to #f8f8ff in HSL */
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 258 64% 53%; /* Equivalent to #5135DB in HSL */
+    --primary-foreground: 240 100% 99%; /* Equivalent to #f8f8ff in HSL */
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+
+.fade-enter {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition:
+    opacity 0.5s ease-in-out,
+    transform 0.5s ease-in-out;
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fade-exit {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.5s ease-in-out,
+    transform 0.5s ease-in-out;
+}
+
+.fade-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+}
