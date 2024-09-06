@@ -9,7 +9,6 @@ const useAuthentication = () => {
     const userInfo = user?.user || null;
     const router = useRouter();
     const currentRoute = window.location.pathname;
-
     useEffect(()=>{
         if(!userInfo && !GUEST_ROUTES.includes(currentRoute)){
             router.push('/auth/signin');

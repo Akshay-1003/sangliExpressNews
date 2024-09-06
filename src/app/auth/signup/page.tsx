@@ -16,8 +16,9 @@ function Register() {
   const router = useRouter();
   useAuthentication();
   const { handleSubmit, register, formState: { errors }, reset } = RegisterValidation();
-
+console.log(errors);
   const handleRegister = async (values: any) => {
+    debugger;
     console.log("Register form values", values);
     try {
       await createUserWithEmailAndPassword(auth,values.email, values.password);
@@ -95,6 +96,16 @@ function Register() {
               placeholder="Enter Your Email Here..."
               name="password"
               label="Password"
+            />
+          </div>
+          <div>
+            <InputField
+              register={register}
+              error={errors.cnfPassword}
+              type="password"
+              placeholder="Enter Your Confirm Password Here..."
+              name="cnfPassword"
+              label="Confirm Password"
             />
           </div>
 

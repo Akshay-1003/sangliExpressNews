@@ -41,7 +41,7 @@ function Login() {
     signInWithPopup(auth, provider).then(async (result) => {
       const user = result.user;
       if (user) {
-        await setDoc(doc(db, "User", user.uid), {
+        await setDoc(doc(db, "Users", user.uid), {
           email: user.email,
           firstName: user.displayName,
           photo: user.photoURL,

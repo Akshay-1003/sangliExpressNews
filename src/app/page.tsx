@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Ensure you import this in the component or globally
+import 'react-toastify/dist/ReactToastify.css';
 
 export const metadata: Metadata = {
   title:
@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
+
   return (
     <>
       <DefaultLayout>
