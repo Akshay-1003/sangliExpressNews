@@ -8,13 +8,14 @@ import { auth } from "../../../firebase/firebase";
 import { useRouter } from "next/navigation";
 import { AuthContext } from "@/provider/AuthProvider";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
+import { useUser } from "@/hooks/useFetchUserInfo";
+
 const DropdownUser = () => {
   const router = useRouter();
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const { user }: any = AuthContext();
+  const { userInfo, error, loading } = useUser() ?? {};
 
-  const userInfo = user.user;
 
   const handleSignOut = async () => {
     try {
@@ -34,7 +35,7 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            {userInfo?.displayName}
+          {userInfo?.firstName} {userInfo?.lastName}
           </span>
           <span className="block text-xs">Reporter</span>
         </span>

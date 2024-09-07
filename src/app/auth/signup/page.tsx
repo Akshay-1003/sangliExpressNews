@@ -16,19 +16,18 @@ function Register() {
   const router = useRouter();
   useAuthentication();
   const { handleSubmit, register, formState: { errors }, reset } = RegisterValidation();
-console.log(errors);
   const handleRegister = async (values: any) => {
     debugger;
     console.log("Register form values", values);
     try {
       await createUserWithEmailAndPassword(auth,values.email, values.password);
       const user = auth.currentUser;
-      console.log(user);
       if (user) {
         await setDoc(doc(db, "Users", user.uid), {
           email: values.email,
           firstName: values.firstName,
           lastName: values.lastName,
+          role: "user",
           photo: ""
         });
       }

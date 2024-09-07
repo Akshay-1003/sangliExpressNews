@@ -1,6 +1,7 @@
 "use client";
 import { auth } from "../../firebase/firebase";
 import { createContext, useContext, useEffect, useState } from "react";
+import admin from 'firebase-admin';
 
 import { User, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 
@@ -27,7 +28,8 @@ const AuthProvider = ({children}:any) =>{
         return subscribe;
     },[])
 
-    console.log("User State ",user.user)
+   
+
 
     return (
         <Context.Provider value={{user,setUser}}>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getAllDocuments } from "@/lib/actions";
 import { useRouter } from 'next/navigation';
+import { useUser } from "@/hooks/useFetchUserInfo";
 
 export interface NewsData {
   id: string;
@@ -19,8 +20,10 @@ export interface NewsData {
 const Home: React.FC = () => {
   const [documents, setDocuments] = useState<NewsData[]>([]);
   const router = useRouter();
+  const { userInfo, error, loading } = useUser() ?? {};
 
   useEffect(() => {
+
     const fetchDocuments = async () => {
       try {
         const fetchedDocuments = await getAllDocuments("news");
@@ -34,19 +37,20 @@ const Home: React.FC = () => {
 
     fetchDocuments();
   }, []);
-console.log("documents", documents);
   const handleReadMore = (id: string) => {
     router.push(`/newsDetails/${id}`); // This will navigate to a new page showing full news content
 
   };
-
+console.log(userInfo?.role === 'admin');
   return (
     <DefaultLayout>
       <div className="container mx-auto px-4 py-8">
         <div className="mb-4">
-          <button className="rounded bg-blue-500 px-4 py-2 font-semibold text-white hover:bg-blue-600">
-            <Link href="/create">Create News</Link>
-          </button>
+          {userInfo?.role === 'admin' && (
+            <button className="rounded bg-blue-500 px-4 py-2 font-semibold text-white hover:bg-blue-600">
+              <Link href="/create">Create News</Link>
+            </button>
+          )}
         </div>
         {/* Loop through all documents and display each as a card */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-3">

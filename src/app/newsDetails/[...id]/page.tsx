@@ -5,8 +5,9 @@ import React, { useState, useEffect } from "react";
 import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/react";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import Image from "next/image";
-import { getDocumentById } from "@/lib/actions"; // Assuming you have this function to fetch a single document by ID
+import { getDocumentById } from "@/lib/actions"; 
 import { MapPinIcon } from "@heroicons/react/24/solid";
+
 interface NewsData {
   id: string;
   files: string[];
@@ -15,12 +16,16 @@ interface NewsData {
   summary: string;
   date: string;
   downloadURLs: string[];
+  reporter: string;
+  photoCaption: string;
+  summaryHighlightheadinq: string;
+  summaryHighlight: string;
+  subtitle: string;
 }
 
 const NewsDetail: React.FC<{ params: { id: string } }> = ({ params }) => {
   const { id } = params;
   const [newsData, setNewsData] = useState<NewsData | null>(null);
-  console.log("newsData", id);
   useEffect(() => {
     const fetchNewsDetail = async () => {
       if (id) {
@@ -59,21 +64,25 @@ const NewsDetail: React.FC<{ params: { id: string } }> = ({ params }) => {
       day: "2-digit",
     });
   };
+  const paragraphs = newsData.summary.split("\n");
 
   return (
     <DefaultLayout>
-      <Breadcrumbs>
+      {/* <Breadcrumbs>
         <BreadcrumbItem href="/home">Home</BreadcrumbItem>
         <BreadcrumbItem href="">Breadcrumbs</BreadcrumbItem>
-      </Breadcrumbs>
+      </Breadcrumbs> */}
       <div className="container mx-auto px-4 py-8 bg-white shadow-lg rounded-lg overflow-hidden">
         {/* Title of the news */}
-        <h1 className="text-gray-900 mb-6 text-4xl font-extrabold leading-tight">
-          {newsData.title}
-        </h1>
+        <div className="mb-4"> <h1 className="text-slate-700 text-4xl font-extrabold leading-tight">
+          {newsData?.title}
+        </h1></div>
+       <div className="text-gray-900 text-3xl font-extrabold leading-tight mb-4">
+        <h2>{newsData?.subtitle}</h2> 
+       </div>
 
         {/* Image Carousel */}
-        <div className="carousel mb-8 w-full">
+        <div className="carousel mb-2 w-full">
           {newsData?.downloadURLs?.map((file, index) => (
             <div
               key={index}
@@ -104,16 +113,36 @@ const NewsDetail: React.FC<{ params: { id: string } }> = ({ params }) => {
             </div>
           ))}
         </div>
-
+          <div>
+            <p className="mb-4 inline-flex items-center text-lg font-semibold ml-2 ">
+            {newsData?.photoCaption}
+            </p>
+          </div>
         {/* Author and Date */}
-        <p className="mb-6 inline-flex items-center text-lg font-semibold text-blue-700">
+        <p className="mb-4 inline-flex items-center text-lg font-semibold text-blue-700">
           <MapPinIcon className="mr-2 h-5 w-5 text-rose-600" />
-          {`By Sangli Express News  - ${formatDate(newsData.date)}`}
+          {`Sangli Express News  - ${formatDate(newsData.date)}`}
         </p>
 
         {/* News Summary */}
         <div className="prose-lg prose max-w-none text-justify leading-relaxed">
-          <p>{newsData.summary}</p>
+          <div className="inline-flex items-center text-lg font-semibold">
+          <p>{newsData?.reporter}</p>
+
+          </div>
+          <div className="prose-lg prose max-w-none text-justify leading-relaxed">
+        {paragraphs.map((paragraph, index) => (
+          <p className="mb-2" key={index}>{paragraph}</p>
+        ))}
+        <div>
+          <p className="inline-flex items-center text-lg font-semibold">
+            {newsData?.summaryHighlightheadinq}
+          </p>
+          <section>
+            {newsData?.summaryHighlight}
+          </section>
+        </div>
+      </div>
         </div>
       </div>
     </DefaultLayout>
