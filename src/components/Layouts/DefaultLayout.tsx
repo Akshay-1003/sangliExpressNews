@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
-import useAuthentication from "@/hooks/useAuthentication";
 
 export default function DefaultLayout({
   children,
@@ -10,7 +9,6 @@ export default function DefaultLayout({
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  useAuthentication();
   return (
     <>
       <div className="flex">
@@ -21,7 +19,7 @@ export default function DefaultLayout({
 
           <main className="relative">
             
-            <div className="relative mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
+            <div className="relative  max-w-screen-2xl md:p-6 2xl:p-10">
               {children}
             </div>
           </main>

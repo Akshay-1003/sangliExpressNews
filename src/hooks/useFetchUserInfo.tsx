@@ -3,13 +3,11 @@ import React, {
   useContext,
   useState,
   useEffect,
-  use,
 } from "react";
 import { getUserInfo } from "@/lib/actions";
-import useAuthentication from "./useAuthentication";
 import { AuthContext } from "@/provider/AuthProvider";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth, db } from "../../firebase/firebase";
+import { auth } from "../../firebase/firebase";
 
 interface UserInfo {
   id: string;
