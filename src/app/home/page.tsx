@@ -44,7 +44,7 @@ const Home: React.FC = () => {
 console.log(userInfo?.role === 'admin');
   return (
     <DefaultLayout>
-      <div className="px-2 py-4">
+      <div className="px- py-4">
         <div className="mb-4">
           {userInfo?.role === 'admin' && (
             <button className="rounded bg-blue-500 px-4 py-2 font-semibold text-white hover:bg-blue-600">

@@ -72,14 +72,17 @@ const NewsDetail: React.FC<{ params: { id: string } }> = ({ params }) => {
     <DefaultLayout>
       {/* Add meta tags inside the Head component */}
       <Head>
+        {/* Title */}
         <title>{newsData.title}</title>
+        
+        {/* Meta Tags */}
         <meta name="description" content={newsData.subtitle} />
         
         {/* Open Graph meta tags for social sharing */}
         <meta property="og:title" content={newsData.title} />
         <meta property="og:description" content={newsData.subtitle} />
         <meta property="og:image" content={newsData.downloadURLs[0]} />
-        <meta property="og:url" content={`https://www.sangliexpressnews.com/newsDetails/${newsData.id}`} />
+        <meta property="og:url" content={`https://your-domain.com/newsDetails/${newsData.id}`} />
         <meta property="og:type" content="article" />
 
         {/* Twitter card meta tags */}
