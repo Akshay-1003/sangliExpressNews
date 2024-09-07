@@ -9,7 +9,6 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
 import { TrashIcon } from "@heroicons/react/24/solid";
-import { report } from "process";
 const CreateNews = () => {
   const router = useRouter();
   const [filePreviews, setFilePreviews] = useState<string[]>([]);
@@ -143,18 +142,12 @@ const CreateNews = () => {
               type="text"
               id="subtitle"
               {...register("subtitle", {
-                required: "News subtitle is required.",
+                required: false,
               })}
-              className={`border-gray-300 text-gray-700 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${
-                errors.subtitle ? "border-red-500" : ""
-              }`}
+              className={`border-gray-300 text-gray-700 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 `}
               placeholder="Enter the subtitle of the news"
             />
-            {errors.subtitle && (
-              <p className="text-red-500 mt-2 text-sm">
-                News subtitle is required.
-              </p>
-            )}
+           
           </div>
           {/* Upload Files */}
           <div>
@@ -169,18 +162,12 @@ const CreateNews = () => {
               id="files"
               multiple
               {...register("files", {
-                required: "At least one file is required.",
+                required: false,
               })}
-              className={`border-gray-300 bg-gray-50 text-gray-700 mt-2 block w-full cursor-pointer rounded-lg border p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${
-                errors.files ? "border-red-500" : ""
-              }`}
+              className={`border-gray-300 bg-gray-50 text-gray-700 mt-2 block w-full cursor-pointer rounded-lg border p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500`}
               onChange={handleFileChange}
             />
-            {errors.files && (
-              <p className="text-red-500 mt-2 text-sm">
-                At least one file is required.
-              </p>
-            )}
+            
 
             {/* File Previews */}
             {filePreviews.length > 0 && (
@@ -222,18 +209,12 @@ const CreateNews = () => {
               type="text"
               id="photoCaption"
               {...register("photoCaption", {
-                required: "News title is required.",
+                required: false,
               })}
-              className={`border-gray-300 text-gray-700 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${
-                errors.photoCaption ? "border-red-500" : ""
-              }`}
+              className={`border-gray-300 text-gray-700 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 `}
               placeholder="Enter the title of the news"
             />
-            {errors.photoCaption && (
-              <p className="text-red-500 mt-2 text-sm">
-                News photoCaption is required.
-              </p>
-            )}
+            
           </div>
           <div>
             <label
@@ -291,19 +272,11 @@ const CreateNews = () => {
             <input
               type="text"
               id="summaryHighlightheadinq"
-              {...register("summaryHighlightheadinq", {
-                required: "News summaryHighlightheadinq is required.",
-              })}
-              className={`border-gray-300 text-gray-700 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${
-                errors.summaryHighlightheadinq ? "border-red-500" : ""
-              }`}
+              {...register("summaryHighlightheadinq", { required: false })}
+              className={`border-gray-300 text-gray-700 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 `}
               placeholder="Enter the title of the news"
             />
-            {errors.summaryHighlightheadinq && (
-              <p className="text-red-500 mt-2 text-sm">
-                News summaryHighlightheadinq is required.
-              </p>
-            )}
+            
           </div>
           <div>
             <label
@@ -316,18 +289,12 @@ const CreateNews = () => {
               type="text"
               id="summaryHighlight"
               {...register("summaryHighlight", {
-                required: "News summaryHighlight is required.",
+                required: false,
               })}
-              className={`border-gray-300 text-gray-700 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${
-                errors.summaryHighlight ? "border-red-500" : ""
-              }`}
+              className={`border-gray-300 text-gray-700 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 `}
               placeholder="Enter the summaryHighlight of the news"
             />
-            {errors.summaryHighlight && (
-              <p className="text-red-500 mt-2 text-sm">
-                News summaryHighlight is required.
-              </p>
-            )}
+           
           </div>
 
           {/* Submit Button */}
