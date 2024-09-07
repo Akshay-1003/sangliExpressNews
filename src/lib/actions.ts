@@ -80,3 +80,18 @@ export const getDocumentById = async (collectionName: string, id: string) => {
     throw new Error("No such document!");
   }
 };
+export const getUserInfo = async (id: string) => {
+  try {
+    const userRef = doc(db, 'Users', id);
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists()) {
+      return { id: userSnap.id, ...userSnap.data() };
+    } else {
+      throw new Error("User not found!");
+    }
+  } catch (error) {
+    console.error("Error getting user info: ", error);
+    throw error;
+  }
+};

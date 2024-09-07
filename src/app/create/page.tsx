@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
 import { TrashIcon } from "@heroicons/react/24/solid";
+import { report } from "process";
 const CreateNews = () => {
   const router = useRouter();
   const [filePreviews, setFilePreviews] = useState<string[]>([]);
@@ -36,7 +37,6 @@ const CreateNews = () => {
         return result;
       }),
     );
-    console.log("uploadedFiles", uploadedFiles);
 
     const fileData = {
       newsId: uniqueId,
@@ -44,6 +44,11 @@ const CreateNews = () => {
       files: uploadedFiles.map((file) => file.fileId),
       summary: values.summary,
       title: values.title,
+      reporter: values.reporter,
+      subtitle: values.subtitle,
+      summaryHighlightheadinq: values.summaryHighlightheadinq,
+      summaryHighlight: values.summaryHighlight,
+      photoCaption: values.photoCaption,
       downloadURLs: uploadedFiles.map((file) => file.downloadURL),
     };
 
@@ -119,7 +124,7 @@ const CreateNews = () => {
               className={`border-gray-300 text-gray-700 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${
                 errors.title ? "border-red-500" : ""
               }`}
-              placeholder="Enter the title of the news"
+              placeholder="Enter the subtitle of the news"
             />
             {errors.title && (
               <p className="text-red-500 mt-2 text-sm">
@@ -127,7 +132,30 @@ const CreateNews = () => {
               </p>
             )}
           </div>
-
+          <div>
+            <label
+              htmlFor="subtitle"
+              className="text-gray-700 block text-sm font-medium"
+            >
+              News Subtitle
+            </label>
+            <input
+              type="text"
+              id="subtitle"
+              {...register("subtitle", {
+                required: "News subtitle is required.",
+              })}
+              className={`border-gray-300 text-gray-700 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${
+                errors.subtitle ? "border-red-500" : ""
+              }`}
+              placeholder="Enter the subtitle of the news"
+            />
+            {errors.subtitle && (
+              <p className="text-red-500 mt-2 text-sm">
+                News subtitle is required.
+              </p>
+            )}
+          </div>
           {/* Upload Files */}
           <div>
             <label
@@ -183,6 +211,54 @@ const CreateNews = () => {
               </div>
             )}
           </div>
+          <div>
+            <label
+              htmlFor="title"
+              className="text-gray-700 block text-sm font-medium"
+            >
+              Photo Caption
+            </label>
+            <input
+              type="text"
+              id="photoCaption"
+              {...register("photoCaption", {
+                required: "News title is required.",
+              })}
+              className={`border-gray-300 text-gray-700 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${
+                errors.photoCaption ? "border-red-500" : ""
+              }`}
+              placeholder="Enter the title of the news"
+            />
+            {errors.photoCaption && (
+              <p className="text-red-500 mt-2 text-sm">
+                News photoCaption is required.
+              </p>
+            )}
+          </div>
+          <div>
+            <label
+              htmlFor="title"
+              className="text-gray-700 block text-sm font-medium"
+            >
+              Reporter Name
+            </label>
+            <input
+              type="text"
+              id="reporter"
+              {...register("reporter", {
+                required: "News reporter is required.",
+              })}
+              className={`border-gray-300 text-gray-700 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${
+                errors.reporter ? "border-red-500" : ""
+              }`}
+              placeholder="Enter the title of the news"
+            />
+            {errors.reporter && (
+              <p className="text-red-500 mt-2 text-sm">
+                News reporter is required.
+              </p>
+            )}
+          </div>
 
           {/* News Summary */}
           <div>
@@ -203,6 +279,54 @@ const CreateNews = () => {
             ></textarea>
             {errors.summary && (
               <p className="text-red-500 mt-2 text-sm">Summary is required.</p>
+            )}
+          </div>
+          <div>
+            <label
+              htmlFor="title"
+              className="text-gray-700 block text-sm font-medium"
+            >
+              Summary Highlight Heading
+            </label>
+            <input
+              type="text"
+              id="summaryHighlightheadinq"
+              {...register("summaryHighlightheadinq", {
+                required: "News summaryHighlightheadinq is required.",
+              })}
+              className={`border-gray-300 text-gray-700 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${
+                errors.summaryHighlightheadinq ? "border-red-500" : ""
+              }`}
+              placeholder="Enter the title of the news"
+            />
+            {errors.summaryHighlightheadinq && (
+              <p className="text-red-500 mt-2 text-sm">
+                News summaryHighlightheadinq is required.
+              </p>
+            )}
+          </div>
+          <div>
+            <label
+              htmlFor="title"
+              className="text-gray-700 block text-sm font-medium"
+            >
+              Summary Highlight{" "}
+            </label>
+            <input
+              type="text"
+              id="summaryHighlight"
+              {...register("summaryHighlight", {
+                required: "News summaryHighlight is required.",
+              })}
+              className={`border-gray-300 text-gray-700 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${
+                errors.summaryHighlight ? "border-red-500" : ""
+              }`}
+              placeholder="Enter the summaryHighlight of the news"
+            />
+            {errors.summaryHighlight && (
+              <p className="text-red-500 mt-2 text-sm">
+                News summaryHighlight is required.
+              </p>
             )}
           </div>
 
@@ -228,7 +352,6 @@ const CreateNews = () => {
                 height={400}
                 className="max-h-screen max-w-full rounded-lg"
                 onClick={closeModal}
-
               />
               <button
                 className="absolute right-4 top-4 rounded-full bg-white px-4 py-2 text-black shadow-md"

@@ -1,71 +1,12 @@
 "use client";
-import InputField from "../../components/InputField";
 import useAuthentication from "../../hooks/useAuthentication";
 import { AuthContext } from "@/provider/AuthProvider";
-import {
-  useProfilePasswordValidation,
-  useProfileValidation,
-} from "@/validationSchema/profile";
-import { updatePassword, updateProfile } from "firebase/auth";
-import { useState } from "react";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import Image from "next/image";
-import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import Link from "next/link";
+import { useUser } from "@/hooks/useFetchUserInfo";
 const Profile = () => {
-  useAuthentication();
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = useProfileValidation();
-
-  const {
-    handleSubmit: passwordHandleSubmit,
-    register: registerPassword,
-    formState: { errors: passwordErrors },
-  } = useProfilePasswordValidation();
-  const { user }: any = AuthContext();
-
-  const [visibleForm, setVisibility] = useState<any>();
-
-  const userInfo = user.user;
-
-  const submitForm = async ({
-    name,
-    photo,
-  }: {
-    name?: string | null;
-    photo?: string | null;
-  }) => {
-    if (name && photo) {
-      updateProfile(userInfo, {
-        displayName: name,
-        photoURL: photo,
-      })
-        .then((response) => {
-          console.log("profile updated");
-          setVisibility("");
-        })
-        .catch((e) => {
-          console.log("failed to update profile ", e.message);
-        });
-    }
-  };
-
-  const submitPasswordForm = ({ password }: { password?: string | null }) => {
-    if (password) {
-      updatePassword(userInfo, password)
-        .then((response) => {
-          console.log("password changed");
-          setVisibility("");
-        })
-        .catch((e) => {
-          console.log("failed to changes password ", e.message);
-        });
-    }
-  };
+  const { userInfo, error, loading } = useUser() ?? {};
   console.log(userInfo);
   return (
     <DefaultLayout>
@@ -172,8 +113,8 @@ const Profile = () => {
             </div>
             <div className="mt-4">
               <h3 className="mb-1.5 text-2xl font-semibold text-black dark:text-white">
-                {userInfo?.displayName}
-              </h3>
+                {userInfo?.firstName} {userInfo?.lastName}
+                  </h3>
             </div>
           </div>
         </div>

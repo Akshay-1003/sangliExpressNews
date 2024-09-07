@@ -1,5 +1,4 @@
 'use client';
-
 import "jsvectormap/dist/jsvectormap.css";
 import "flatpickr/dist/flatpickr.min.css";
 import "@/css/satoshi.css";
@@ -9,9 +8,8 @@ import React, { useEffect, useState } from "react";
 import Loader from "@/components/common/Loader";
 import AuthProvider from "@/provider/AuthProvider";
 import ToastProvider from "@/provider/toast.provider";
-import { type Metadata } from "next";
 import { Inter, Lexend } from "next/font/google";
-
+import {UserProvider} from "@/hooks/useFetchUserInfo";
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
@@ -27,10 +25,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
-
-  // const pathname = usePathname();
 
   useEffect(() => {
     setTimeout(() => setLoading(false), 1000);
@@ -46,11 +41,13 @@ export default function RootLayout({
       )}
     >
       <body suppressHydrationWarning={true}>
+        <UserProvider>
         <ToastProvider>
           <div className="dark:bg-boxdark-2 dark:text-bodydark">
             {loading ? <Loader /> : <AuthProvider>{children}</AuthProvider>}
           </div>
         </ToastProvider>
+        </UserProvider>
       </body>
     </html>
   );
