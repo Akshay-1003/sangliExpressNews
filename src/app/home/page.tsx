@@ -44,7 +44,7 @@ const Home: React.FC = () => {
 console.log(userInfo?.role === 'admin');
   return (
     <DefaultLayout>
-      <div className="container mx-auto px-4 py-8">
+      <div className="px-2 py-4">
         <div className="mb-4">
           {userInfo?.role === 'admin' && (
             <button className="rounded bg-blue-500 px-4 py-2 font-semibold text-white hover:bg-blue-600">
@@ -55,7 +55,7 @@ console.log(userInfo?.role === 'admin');
         {/* Loop through all documents and display each as a card */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-3">
           {documents.map((doc) => (
-            <div key={doc.id} className="card w-96 bg-base-100 shadow-xl">
+            <div key={doc.id} className="card bg-base-100 shadow-xl">
               <figure className="w-full">
                 {/* Carousel for images */}
                 <div className="carousel w-full">
