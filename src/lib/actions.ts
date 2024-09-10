@@ -21,13 +21,13 @@ export const createDocument = async (collectionName: string, data: any) => {
   }
 };
 
-export const getAllDocuments = async (collectionName: string) => {
+export const getAllDocuments = async () => {
   try {
     
 
     const querySnapshot = await getDocs(
       query(
-        collection(db, collectionName)
+        collection(db, 'news')
         // where("date", "==", new Date().toLocaleDateString())
       ),
     );
@@ -51,7 +51,7 @@ export const updateDocument = async (
   data: any,
 ) => {
   try {
-    const docRef = doc(db, collectionName, id);
+    const docRef = doc(db, 'news', id);
     await updateDoc(docRef, data);
     console.log("Document updated with ID: ", id);
   } catch (error) {
@@ -60,9 +60,9 @@ export const updateDocument = async (
   }
 };
 
-export const deleteDocument = async (collectionName: string, id: string) => {
+export const deleteDocument = async (id: string) => {
   try {
-    const docRef = doc(db, collectionName, id);
+    const docRef = doc(db, 'news', id);
     await deleteDoc(docRef);
     console.log("Document deleted with ID: ", id);
   } catch (error) {
@@ -70,8 +70,8 @@ export const deleteDocument = async (collectionName: string, id: string) => {
     throw error;
   }
 };
-export const getDocumentById = async (collectionName: string, id: string) => {
-  const docRef = doc(db, collectionName, id);
+export const getDocumentById = async ( id: string) => {
+  const docRef = doc(db, 'news', id);
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
