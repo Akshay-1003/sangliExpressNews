@@ -3,10 +3,10 @@ import React, { useState, useEffect } from "react";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import Link from "next/link";
 import Image from "next/image";
-import { getAllDocuments } from "@/lib/actions";
-import { useRouter } from 'next/navigation';
+import { getAllDocuments, deleteDocument } from "@/lib/actions";
+import { useRouter } from "next/navigation";
 import { useUser } from "@/hooks/useFetchUserInfo";
-
+import { Button, ButtonGroup } from "@nextui-org/button";
 export interface NewsData {
   id: string;
   files: string[];
@@ -22,31 +22,35 @@ const Home: React.FC = () => {
   const router = useRouter();
   const { userInfo, error, loading } = useUser() ?? {};
 
-  useEffect(() => {
-
-    const fetchDocuments = async () => {
-      try {
-        const fetchedDocuments = await getAllDocuments("news");
-        if (fetchedDocuments) {
-          setDocuments(fetchedDocuments as NewsData[]);
-        }
-      } catch (error) {
-        console.error("Error fetching documents:", error);
+  const fetchDocuments = async () => {
+    try {
+      const fetchedDocuments = await getAllDocuments();
+      if (fetchedDocuments) {
+        setDocuments(fetchedDocuments as NewsData[]);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching documents:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchDocuments();
   }, []);
-  const handleReadMore = (id: string) => {
-    router.push(`/newsDetails/${id}`); // This will navigate to a new page showing full news content
 
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteDocument(id); // Assuming you have a deleteDocument function
+      await fetchDocuments(); // Refresh the data after deletion
+    } catch (error) {
+      console.error("Error deleting document:", error);
+    }
   };
-console.log(userInfo?.role === 'admin');
+  console.log(userInfo?.role === "admin");
   return (
     <DefaultLayout>
-      <div className="px- py-4">
+      <div className="px-2 py-4">
         <div className="mb-4">
-          {userInfo?.role === 'admin' && (
+          {userInfo?.role === "admin" && (
             <button className="rounded bg-blue-500 px-4 py-2 font-semibold text-white hover:bg-blue-600">
               <Link href="/create">Create News</Link>
             </button>
@@ -55,7 +59,7 @@ console.log(userInfo?.role === 'admin');
         {/* Loop through all documents and display each as a card */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-3">
           {documents.map((doc) => (
-            <div key={doc.id} className="card bg-base-100 shadow-xl">
+            <div key={doc.id} className="card rounded-md bg-base-100 shadow-xl">
               <figure className="w-full">
                 {/* Carousel for images */}
                 <div className="carousel w-full">
@@ -99,12 +103,22 @@ console.log(userInfo?.role === 'admin');
                 </p>
                 <p className="text-gray-500 text-sm">{doc.date}</p>
                 <div className="card-actions justify-end">
-                  <button
-                    onClick={() => handleReadMore(doc.id)}
-                    className="btn btn-primary"
-                  >
-                    Read More
-                  </button>
+                  <Link href={`/news/${doc.id}`}>
+                    <Button className="rounded-md bg-blue-600 text-white">
+                      Read More
+                    </Button>
+                  </Link>
+                  {userInfo?.role === "admin" && (
+                    <Button
+                      color="danger"
+                      className="rounded-md text-white"
+                      onClick={() => {
+                        handleDelete(doc.id);
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
