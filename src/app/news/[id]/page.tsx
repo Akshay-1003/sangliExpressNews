@@ -50,7 +50,7 @@ export async function generateMetadata({
     openGraph: {
       title: documentData.title,
       description: documentData.summary,
-      url: `${process.env.NEXT_PUBLIC_BASE_URL}/news/${params.id}`,
+      url: `${window.location.origin}/news/${params.id}`,
       images: [
         {
           url: documentData.downloadURLs[0],
