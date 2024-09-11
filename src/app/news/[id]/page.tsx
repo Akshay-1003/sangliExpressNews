@@ -1,22 +1,19 @@
-import { GetStaticProps, GetStaticPaths } from 'next';
-import { getDocumentById, getAllNewsIds } from "@/lib/actions";
+import { getDocumentById } from "@/lib/actions";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { NewsData } from "@/types/newsData";
 import Image from "next/image";
 import { MapPinIcon } from "@heroicons/react/24/solid";
 import Link from 'next/link';
-import { useMemo } from 'react';
-interface PageProps { 
-  params:{id:string}
+
+interface PageProps {
+  params: { id: string }
 }
 
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
-  const documentData = await getDocumentById(params.id) as NewsData;
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const newsData = await getDocumentById(params.id) as NewsData;
 
-  if (!documentData) {
+  if (!newsData) {
     return {
       title: "News not found",
       description: "The news article you're looking for does not exist.",
@@ -24,31 +21,38 @@ export async function generateMetadata({
   }
 
   return {
-    title: documentData.title,
-    description: documentData.summary,
+    title: newsData.title,
+    description: newsData.summary,
     openGraph: {
-      title: documentData.title,
-      description: documentData.summary,
+      title: newsData.title,
+      description: newsData.summary,
       url: `${window.location.origin}/news/${params.id}`,
+
       images: [
         {
-          url: documentData.downloadURLs[0],
+          url: newsData.downloadURLs[0],
           width: 800,
           height: 600,
-          alt: documentData.title,
+          alt: newsData.title,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: documentData.title,
-      description: documentData.summary,
-      images: [documentData.downloadURLs[0]],
+      title: newsData.title,
+      description: newsData.summary,
+      images: [newsData.downloadURLs[0]],
     },
   };
 }
 
-export default function NewsDetailPage({ newsData }: { newsData: NewsData }) {
+export default async function NewsDetailPage({ params }: PageProps) {
+  const newsData = await getDocumentById(params.id) as NewsData;
+
+  if (!newsData) {
+    return <div>News not found</div>;
+  }
+
   const formatDate = (dateString: string) => {
     const [day, month, year] = dateString.split("/");
     const date = new Date(`${year}-${month}-${day}`);
@@ -59,12 +63,8 @@ export default function NewsDetailPage({ newsData }: { newsData: NewsData }) {
     });
   };
 
-  const formattedDate = useMemo(() => formatDate(newsData.date), [newsData.date]);
-  const paragraphs = useMemo(() => newsData.summary.split("\n"), [newsData.summary]);
-
-  if (!newsData) {
-    return <>No Data Found</>;
-  }
+  const formattedDate = formatDate(newsData.date);
+  const paragraphs = newsData.summary.split("\n");
 
   return (
     <DefaultLayout>
@@ -92,7 +92,6 @@ export default function NewsDetailPage({ newsData }: { newsData: NewsData }) {
                 width={800}
                 height={400}
                 priority={index === 0}
-                loading={index === 0 ? "eager" : "lazy"}
               />
               <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
                 <Link href={`#slide-${newsData.id}-${index === 0 ? newsData.downloadURLs.length - 1 : index - 1}`} className="btn btn-circle">
