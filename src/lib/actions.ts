@@ -95,3 +95,14 @@ export const getUserInfo = async (id: string) => {
     throw error;
   }
 };
+export const getAllNewsIds = async () => {
+  try {
+    const newsCollection = collection(db, 'news');
+    const newsSnapshot = await getDocs(newsCollection);
+    const newsIds = newsSnapshot.docs.map(doc => doc.id);
+    return newsIds;
+  } catch (error) {
+    console.error("Error getting all news IDs: ", error);
+    throw error;
+  }
+};

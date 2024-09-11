@@ -4,9 +4,7 @@ import "@/css/satoshi.css";
 import "@/css/style.css";
 import { cn } from '../lib/utils';
 import { Inter, Lexend } from "next/font/google";
-import ClientLayout from "./clientSideLayout"; // Import client-side layout
-import { Metadata } from 'next';
-import { HelmetProvider } from 'react-helmet-async';
+import ClientLayout from "./clientSideLayout"; 
 
 const inter = Inter({
   subsets: ["latin"],
