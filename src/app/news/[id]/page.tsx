@@ -7,34 +7,13 @@ import Image from "next/image";
 import { MapPinIcon } from "@heroicons/react/24/solid";
 import Link from 'next/link';
 import { useMemo } from 'react';
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const newsIds = await getAllNewsIds();
-  
-  return {
-    paths: newsIds.map((id) => ({ params: { id } })),
-    fallback: 'blocking'
-  };
-}
-
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const newsData = await getDocumentById(params?.id as string) as NewsData;
-  
-  if (!newsData) {
-    return { notFound: true };
-  }
-
-  return {
-    props: { newsData },
-    revalidate: 60 * 60 // Revalidate every hour
-  };
+interface PageProps { 
+  params:{id:string}
 }
 
 export async function generateMetadata({
   params,
-}: {
-  params: { id: string };
-}): Promise<Metadata> {
+}: PageProps): Promise<Metadata> {
   const documentData = await getDocumentById(params.id) as NewsData;
 
   if (!documentData) {
