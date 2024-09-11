@@ -19,7 +19,7 @@ export default function DefaultLayout({
 
           <main className="relative">
             
-            <div className="relative  max-w-screen-2xl md:p-6 2xl:p-10">
+            <div className="relative  max-w-screen-2xl md:p-6 2xl:p-10 m-2">
               {children}
             </div>
           </main>
