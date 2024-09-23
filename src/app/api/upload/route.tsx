@@ -66,7 +66,7 @@ export async function POST(request: Request) {
 }
 
 // Optional: Increase timeout in Next.js config if required
-export const config = {
+ const config = {
   api: {
     bodyParser: false,
     responseLimit: '4mb', // Adjust as per your file size needs
