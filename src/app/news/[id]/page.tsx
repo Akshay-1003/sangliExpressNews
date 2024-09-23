@@ -17,9 +17,7 @@ export async function generateMetadata({
 }: {
   params: { id: string };
 }): Promise<Metadata> {
-  const documentData = (await getDocumentById(
-    params.id,
-  )) as DocumentData;
+  const documentData = (await getDocumentById(params.id)) as DocumentData;
 
   if (!documentData) {
     return {
@@ -34,10 +32,10 @@ export async function generateMetadata({
     openGraph: {
       title: documentData.title,
       description: documentData.summary,
-      url: typeof window !== 'undefined' ? window.location.href : '',
+      url: typeof window !== "undefined" ? window.location.href : "",
       images: [
         {
-          url: documentData.downloadURLs,
+          url: documentData?.downloadURLs || "/images/logo/logo-dark.png",
           width: 800,
           height: 600,
           alt: documentData.title,
@@ -48,13 +46,13 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: documentData.title,
       description: documentData.summary,
-      images: [documentData.downloadURLs],
+      images: [documentData?.downloadURLs || "/images/logo/logo-dark.png"],
     },
   };
 }
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const newsData = (await getDocumentById( params.id)) as NewsData;
+  const newsData = (await getDocumentById(params.id)) as NewsData;
   const formatDate = (dateString: any) => {
     const [day, month, year] = dateString.split("/");
     const date = new Date(`${year}-${month}-${day}`); // Convert to yyyy-mm-dd format
