@@ -17,14 +17,18 @@ export async function POST(request: Request) {
       `${new Date().getFullYear()}/${new Date().getMonth() + 1}/${fileName}`,
     );
 
-    // Wrap the upload process in a Promise so we can await it
-    const downloadURL = await new Promise<string>((resolve, reject) => {
+    // Define a timeout promise that rejects after a certain time
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error("File upload timed out")), 15000) // 15 seconds timeout
+    );
+
+    // Create the upload process as a promise
+    const uploadPromise = new Promise<string>((resolve, reject) => {
       const uploadTask = uploadBytesResumable(storageRef, file);
 
       uploadTask.on(
         "state_changed",
         (snapshot) => {
-          // You can track progress here, but it's not necessary for your response
           const progress = Math.round(
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
           );
@@ -34,28 +38,37 @@ export async function POST(request: Request) {
           reject(error); // Reject if an error occurs
         },
         () => {
-          // Get the download URL once the upload is complete
-          getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-            resolve(url); // Resolve the Promise with the download URL
-          });
-        },
+          getDownloadURL(uploadTask.snapshot.ref).then(resolve).catch(reject); // Resolve with download URL
+        }
       );
     });
 
-    // Return response with the download URL once upload completes
+    // Use Promise.race to race between upload and timeout
+    const downloadURL = await Promise.race([uploadPromise, timeoutPromise]);
+
+    // Respond with the download URL if successful
     return NextResponse.json(
       {
         message: "File uploaded successfully",
         downloadURL,
         fileId: storageRef.fullPath,
       },
-      { status: 200 },
+      { status: 200 }
     );
   } catch (error) {
     console.error("Error uploading file:", error);
+    
     return NextResponse.json(
-      { error: "Failed to upload file" },
-      { status: 500 },
+      { error: error || "Failed to upload file" },
+      { status: 500 }
     );
   }
 }
+
+// Optional: Increase timeout in Next.js config if required
+export const config = {
+  api: {
+    bodyParser: false,
+    responseLimit: '4mb', // Adjust as per your file size needs
+  },
+};
