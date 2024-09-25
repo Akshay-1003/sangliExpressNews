@@ -35,7 +35,7 @@ export async function generateMetadata({
       url: typeof window !== "undefined" ? window.location.href : "",
       images: [
         {
-          url: documentData?.downloadURLs || "/images/logo/logo-dark.png",
+          url: documentData?.downloadURLs[0] || "/images/logo/logo-dark.png",
           width: 800,
           height: 600,
           alt: documentData.title,
@@ -46,7 +46,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: documentData.title,
       description: documentData.summary,
-      images: [documentData?.downloadURLs || "/images/logo/logo-dark.png"],
+      images: [documentData?.downloadURLs[0] || "/images/logo/logo-dark.png"],
     },
   };
 }

@@ -1,74 +1,61 @@
 import { NextResponse } from "next/server";
-import { storage } from "../../../../firebase/firebase"; // Import your initialized Firebase storage
+import { storage } from "../../../../firebase/firebase"; // Your initialized Firebase storage
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 
 export async function POST(request: Request) {
   try {
+    // Parse form data from the request
     const formData = await request.formData();
     const file = formData.get("file") as File;
     const fileName = formData.get("fileName") as string;
 
+    // Handle case where no file is provided
     if (!file) {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
     }
 
-    const storageRef = ref(
-      storage,
-      `${new Date().getFullYear()}/${new Date().getMonth() + 1}/${fileName}`,
-    );
+    // Create a reference to the file location in Firebase Storage
+    const storageRef = ref(storage, `${new Date().getFullYear()}/${new Date().getMonth() + 1}/${fileName}`);
 
-    // Define a timeout promise that rejects after a certain time
-    const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error("File upload timed out")), 15000) // 15 seconds timeout
-    );
+    // Start the file upload using Firebase's `uploadBytesResumable`
+    const uploadTask = uploadBytesResumable(storageRef, file);
 
-    // Create the upload process as a promise
-    const uploadPromise = new Promise<string>((resolve, reject) => {
-      const uploadTask = uploadBytesResumable(storageRef, file);
-
+    // Return a promise that resolves when the upload is complete and retrieves the download URL
+    const downloadURL = await new Promise<string>((resolve, reject) => {
       uploadTask.on(
         "state_changed",
         (snapshot) => {
-          const progress = Math.round(
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
-          );
+          // Optional: You can track upload progress here if needed
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           console.log(`Upload is ${progress}% done`);
         },
         (error) => {
-          reject(error); // Reject if an error occurs
+          // Reject the promise if an error occurs during the upload
+          console.error("Upload failed:", error);
+          reject(error);
         },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then(resolve).catch(reject); // Resolve with download URL
+        async () => {
+          // On successful upload, get the download URL
+          try {
+            const url = await getDownloadURL(uploadTask.snapshot.ref);
+            resolve(url);
+          } catch (error) {
+            reject(error);
+          }
         }
       );
     });
 
-    // Use Promise.race to race between upload and timeout
-    const downloadURL = await Promise.race([uploadPromise, timeoutPromise]);
+    // Respond with a success message and the download URL once the upload is complete
+    return NextResponse.json({
+      message: "File uploaded successfully",
+      downloadURL,
+      fileId: storageRef.fullPath, // Return the file path for future reference
+    }, { status: 200 });
 
-    // Respond with the download URL if successful
-    return NextResponse.json(
-      {
-        message: "File uploaded successfully",
-        downloadURL,
-        fileId: storageRef.fullPath,
-      },
-      { status: 200 }
-    );
   } catch (error) {
+    // Handle any errors that occur during the upload process
     console.error("Error uploading file:", error);
-    
-    return NextResponse.json(
-      { error: error || "Failed to upload file" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: error || "Failed to upload file" }, { status: 500 });
   }
 }
-
-// Optional: Increase timeout in Next.js config if required
- const config = {
-  api: {
-    bodyParser: false,
-    responseLimit: '4mb', // Adjust as per your file size needs
-  },
-};
