@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
 import { TrashIcon } from "@heroicons/react/24/solid";
-import {Spinner} from "@nextui-org/react";
+import { Spinner } from "@nextui-org/react";
 const debounce = (func: (...args: any[]) => void, delay: number) => {
   let timeout: ReturnType<typeof setTimeout>;
   return (...args: any[]) => {
@@ -34,7 +34,7 @@ const CreateNews: React.FC = () => {
   const [filePreviews, setFilePreviews] = useState<string[]>([]);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
-const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -70,8 +70,7 @@ const [isLoading, setIsLoading] = useState(false);
   }, [setValue, getValues]);
 
   useEffect(() => {
-    const subscription = watch((value, { name, type }) => {
-    });
+    const subscription = watch((value, { name, type }) => {});
     return () => subscription.unsubscribe();
   }, [watch]);
 
@@ -93,16 +92,25 @@ const [isLoading, setIsLoading] = useState(false);
     100,
   );
 
+  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    if (files.length > 0) {
-      setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
-      const fileURLs = files.map((file) => URL.createObjectURL(file));
-      setFilePreviews((prevPreviews) => [...prevPreviews, ...fileURLs]);
+    const largeFiles = files.filter((file) => file.size > MAX_FILE_SIZE);
+
+    if (largeFiles.length > 0) {
+      toast.error("One or more files exceed the size limit of 10MB.", {
+        position: "top-center",
+      });
+      return;
     }
+
+    setSelectedFiles([...selectedFiles, ...files]);
+    const fileURLs = files.map((file) => URL.createObjectURL(file));
+    setFilePreviews([...filePreviews, ...fileURLs]);
   };
 
   const handleRemoveAttachedFile = (index: number) => {
+    URL.revokeObjectURL(filePreviews[index]); // Revoke the object URL to free up memory
     setFilePreviews((prev) => prev.filter((_, i) => i !== index));
     setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
   };
@@ -388,7 +396,6 @@ const [isLoading, setIsLoading] = useState(false);
               ) : (
                 "Submit News"
               )}
-
             </button>
             <button
               type="button"
@@ -399,7 +406,11 @@ const [isLoading, setIsLoading] = useState(false);
             </button>
           </div>
         </form>
-
+        {isLoading && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <Spinner size="lg" />
+          </div>
+        )}
         {selectedFile && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
             <div className="relative">
