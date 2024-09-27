@@ -67,7 +67,6 @@ export default async function Page({ params }: { params: { id: string } }) {
   if (!newsData) {
     return <div>News not found</div>;
   }
-
   return (
     <DefaultLayout>
       <div className="container mx-auto overflow-hidden rounded-lg bg-white px-4 py-8 shadow-lg">
@@ -137,7 +136,7 @@ export default async function Page({ params }: { params: { id: string } }) {
             ))}
             <div>
               <p className="inline-flex items-center text-lg font-semibold">
-                {newsData?.summaryHighlightheadinq}
+                {newsData?.summaryHighlightheading}
               </p>
               <section>{newsData?.summaryHighlight}</section>
             </div>
