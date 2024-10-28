@@ -16,7 +16,6 @@ export async function POST(request: Request) {
 
     // Create a reference to the file location in Firebase Storage
     const storageRef = ref(storage, `${new Date().getFullYear()}/${new Date().getMonth() + 1}/${fileName}`);
-
     // Start the file upload using Firebase's `uploadBytesResumable`
     const uploadTask = uploadBytesResumable(storageRef, file);
 

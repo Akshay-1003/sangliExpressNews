@@ -48,7 +48,6 @@ const CreateNews: React.FC = () => {
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
-        console.log("App resumed from background");
         const savedState = localStorage.getItem("formState");
         if (savedState) {
           const parsedState = JSON.parse(savedState);
@@ -78,7 +77,6 @@ const CreateNews: React.FC = () => {
     const saveDraft = () => {
       const currentState = getValues();
       localStorage.setItem("newsDraft", JSON.stringify(currentState));
-      console.log("Draft saved");
     };
 
     const interval = setInterval(saveDraft, 60000);
@@ -149,7 +147,6 @@ const CreateNews: React.FC = () => {
       };
 
       const docId = await createDocument("news", fileData);
-      console.log("Document created with ID:", docId);
 
       toast.success("News Submitted Successfully!", {
         position: "bottom-left",
