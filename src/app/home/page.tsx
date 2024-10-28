@@ -45,7 +45,6 @@ const Home: React.FC = () => {
       console.error("Error deleting document:", error);
     }
   };
-  console.log(userInfo?.role === "admin");
   return (
     <DefaultLayout>
       <div className="px-2 py-4">
@@ -70,7 +69,7 @@ const Home: React.FC = () => {
                       className="carousel-item relative w-full"
                     >
                       <Image
-                        src={file} // Adjust the path to your storage bucket or local directory
+                        src={file}
                         alt={doc.title}
                         className="w-full object-cover"
                         width={300}
@@ -78,14 +77,14 @@ const Home: React.FC = () => {
                       />
                       <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
                         <a
-                          href={`#slide-${doc.id}-${index === 0 ? doc.files.length - 1 : index - 1}`}
-                          className="btn btn-circle"
+                          href={`#slide-${doc.id}-${index === 0 ? doc.downloadURLs.length - 1 : index - 1}`}
+                          className="btn btn-circle opacity-0 hover:opacity-100 transition-opacity duration-300"
                         >
                           ❮
                         </a>
                         <a
                           href={`#slide-${doc.id}-${(index + 1) % doc.files.length}`}
-                          className="btn btn-circle"
+                          className="btn btn-circle opacity-0 hover:opacity-100 transition-opacity duration-300"
                         >
                           ❯
                         </a>
@@ -94,7 +93,7 @@ const Home: React.FC = () => {
                   ))}
                 </div>
               </figure>
-              <div className="card-body">
+              <div className="card-body p-4">
                 <h2 className="card-title">{doc.title}</h2>
                 <p>
                   {doc.summary.length > 100

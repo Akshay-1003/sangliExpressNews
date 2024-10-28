@@ -20,8 +20,9 @@ const firebaseConfig = {
   storageBucket: "expressnews-fa07d.appspot.com",
   messagingSenderId: "404469601235",
   appId: "1:404469601235:web:6d74229051dadef65ad526",
-  measurementId: "G-X90JGKFJ75",
+  measurementId: "G-X90JGKFJ75"
 };
+
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

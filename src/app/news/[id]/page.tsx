@@ -2,9 +2,8 @@ import { getDocumentById } from "@/lib/actions";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { NewsData } from "../../../types/newsData";
-import Image from "next/image";
 import { MapPinIcon } from "@heroicons/react/24/solid";
-
+import Image from "next/image";
 interface DocumentData {
   id: string;
   title: string;
@@ -17,10 +16,7 @@ export async function generateMetadata({
 }: {
   params: { id: string };
 }): Promise<Metadata> {
-  const documentData = (await getDocumentById(
-    params.id,
-  )) as DocumentData;
-
+  const documentData = (await getDocumentById(params.id)) as DocumentData;
   if (!documentData) {
     return {
       title: "News not found",
@@ -31,13 +27,14 @@ export async function generateMetadata({
   return {
     title: documentData.title,
     description: documentData.summary,
+    metadataBase: new URL("https://sangliexpressnews.com"), // Set the base URL here
     openGraph: {
       title: documentData.title,
       description: documentData.summary,
-      url: typeof window !== 'undefined' ? window.location.href : '',
+      url: `https://sangliexpressnews.com/news/${params.id}`, // Absolute URL
       images: [
         {
-          url: documentData.downloadURLs,
+          url: documentData?.downloadURLs[0] || "/images/logo/logo-dark.png",
           width: 800,
           height: 600,
           alt: documentData.title,
@@ -48,13 +45,14 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: documentData.title,
       description: documentData.summary,
-      images: [documentData.downloadURLs],
+      images: [documentData?.downloadURLs[0] || "/images/logo/logo-dark.png"],
     },
   };
 }
 
+
 export default async function Page({ params }: { params: { id: string } }) {
-  const newsData = (await getDocumentById( params.id)) as NewsData;
+  const newsData = (await getDocumentById(params.id)) as NewsData;
   const formatDate = (dateString: any) => {
     const [day, month, year] = dateString.split("/");
     const date = new Date(`${year}-${month}-${day}`); // Convert to yyyy-mm-dd format
@@ -69,7 +67,6 @@ export default async function Page({ params }: { params: { id: string } }) {
   if (!newsData) {
     return <div>News not found</div>;
   }
-
   return (
     <DefaultLayout>
       <div className="container mx-auto overflow-hidden rounded-lg bg-white px-4 py-8 shadow-lg">
@@ -83,6 +80,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         </div>
 
         <div className="carousel mb-2 w-full">
+          
           {newsData?.downloadURLs?.map((file, index) => (
             <div
               key={index}
@@ -139,7 +137,7 @@ export default async function Page({ params }: { params: { id: string } }) {
             ))}
             <div>
               <p className="inline-flex items-center text-lg font-semibold">
-                {newsData?.summaryHighlightheadinq}
+                {newsData?.summaryHighlightheading}
               </p>
               <section>{newsData?.summaryHighlight}</section>
             </div>

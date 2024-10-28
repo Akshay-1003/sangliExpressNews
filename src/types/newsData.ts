@@ -8,7 +8,7 @@ export interface NewsData {
     downloadURLs: string[];
     reporter: string;
     photoCaption: string;
-    summaryHighlightheadinq: string;
+    summaryHighlightheading: string;
     summaryHighlight: string;
     subtitle: string;
   }
