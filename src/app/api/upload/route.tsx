@@ -36,8 +36,8 @@ export async function POST(request: Request) {
             reject(error);
           }
         }
-      );
-    });
+     ) }
+    );
 
     // Immediately respond with download URL once upload completes
     return NextResponse.json({
