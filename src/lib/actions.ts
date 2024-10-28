@@ -13,7 +13,6 @@ import {
 export const createDocument = async (collectionName: string, data: any) => {
   try {
     const docRef = await addDoc(collection(db, collectionName), data);
-    console.log("Document written with ID: ", docRef.id);
     return docRef.id;
   } catch (error) {
     console.error("Error adding document: ", error);
@@ -53,7 +52,6 @@ export const updateDocument = async (
   try {
     const docRef = doc(db, 'news', id);
     await updateDoc(docRef, data);
-    console.log("Document updated with ID: ", id);
   } catch (error) {
     console.error("Error updating document: ", error);
     throw error;
@@ -64,7 +62,6 @@ export const deleteDocument = async (id: string) => {
   try {
     const docRef = doc(db, 'news', id);
     await deleteDoc(docRef);
-    console.log("Document deleted with ID: ", id);
   } catch (error) {
     console.error("Error deleting document: ", error);
     throw error;

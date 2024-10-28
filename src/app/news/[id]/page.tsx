@@ -2,9 +2,8 @@ import { getDocumentById } from "@/lib/actions";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { NewsData } from "../../../types/newsData";
-import Image from "next/image";
 import { MapPinIcon } from "@heroicons/react/24/solid";
-
+import Image from "next/image";
 interface DocumentData {
   id: string;
   title: string;
@@ -18,7 +17,6 @@ export async function generateMetadata({
   params: { id: string };
 }): Promise<Metadata> {
   const documentData = (await getDocumentById(params.id)) as DocumentData;
-
   if (!documentData) {
     return {
       title: "News not found",
@@ -29,10 +27,11 @@ export async function generateMetadata({
   return {
     title: documentData.title,
     description: documentData.summary,
+    metadataBase: new URL("https://sangliexpressnews.com"), // Set the base URL here
     openGraph: {
       title: documentData.title,
       description: documentData.summary,
-      url: typeof window !== "undefined" ? window.location.href : "",
+      url: `https://sangliexpressnews.com/news/${params.id}`, // Absolute URL
       images: [
         {
           url: documentData?.downloadURLs[0] || "/images/logo/logo-dark.png",
@@ -50,6 +49,7 @@ export async function generateMetadata({
     },
   };
 }
+
 
 export default async function Page({ params }: { params: { id: string } }) {
   const newsData = (await getDocumentById(params.id)) as NewsData;
@@ -80,6 +80,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         </div>
 
         <div className="carousel mb-2 w-full">
+          
           {newsData?.downloadURLs?.map((file, index) => (
             <div
               key={index}

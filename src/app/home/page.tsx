@@ -45,7 +45,6 @@ const Home: React.FC = () => {
       console.error("Error deleting document:", error);
     }
   };
-  console.log(userInfo?.role === "admin");
   return (
     <DefaultLayout>
       <div className="px-2 py-4">
