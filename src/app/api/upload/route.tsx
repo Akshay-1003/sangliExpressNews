@@ -16,14 +16,16 @@ export async function POST(request: Request) {
     // Create a storage reference for the file
     const storageRef = ref(storage, `${new Date().getFullYear()}/${new Date().getMonth() + 1}/${fileName}`);
     
-    // Upload file with resumable uploads, resolving immediately for large file handling
+    // Upload file using uploadBytesResumable
     const uploadTask = uploadBytesResumable(storageRef, file);
 
-    // Return a promise that resolves with the download URL once upload completes
     const downloadURL = await new Promise<string>((resolve, reject) => {
       uploadTask.on(
         "state_changed",
-        null,
+        (snapshot) => {
+          // Log the upload progress
+          console.log("Upload progress:", (snapshot.bytesTransferred / snapshot.totalBytes) * 100 + "%");
+        },
         (error) => {
           console.error("Upload failed:", error);
           reject(error);
@@ -33,11 +35,12 @@ export async function POST(request: Request) {
             const url = await getDownloadURL(uploadTask.snapshot.ref);
             resolve(url);
           } catch (error) {
+            console.error("Error getting download URL:", error);
             reject(error);
           }
         }
-     ) }
-    );
+      );
+    });
 
     // Immediately respond with download URL once upload completes
     return NextResponse.json({
