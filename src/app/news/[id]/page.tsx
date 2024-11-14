@@ -11,11 +11,7 @@ interface DocumentData {
   summary: string;
   downloadURLs: string;
 }
-export async function generateMetadata({
-  params,
-}: {
-  params: { id: string };
-}): Promise<Metadata> {
+export async function generateMetadata({ params }:any) {
   const documentData = (await getDocumentById(params.id)) as DocumentData;
   if (!documentData) {
     return {
@@ -27,28 +23,29 @@ export async function generateMetadata({
   return {
     title: documentData.title,
     description: documentData.summary,
-    metadataBase: new URL("https://sangliexpressnews.com"), // Set the base URL here
+    metadataBase: new URL("https://sangliexpressnews.com"),
     openGraph: {
       title: documentData.title,
       description: documentData.summary,
-      url: `https://sangliexpressnews.com/news/${params.id}`, // Absolute URL
-      images: [
+      url: `https://sangliexpressnews.com/news/${params.id}`,
+      images: documentData.downloadURLs ? [
         {
-          url: documentData?.downloadURLs[0],
+          url: documentData.downloadURLs[0],
           width: 800,
           height: 600,
           alt: documentData.title,
         },
-      ],
+      ] : [],
     },
     twitter: {
       card: "summary_large_image",
       title: documentData.title,
       description: documentData.summary,
-      images: [documentData?.downloadURLs[0]],
+      images: documentData.downloadURLs ? [documentData.downloadURLs[0]] : [],
     },
   };
 }
+
 
 
 export default async function Page({ params }: { params: { id: string } }) {

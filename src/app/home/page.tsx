@@ -1,12 +1,12 @@
-"use client";
-import React, { useState, useEffect } from "react";
+'use client';
+import { useState, useEffect } from "react";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import Link from "next/link";
 import Image from "next/image";
 import { getAllDocuments, deleteDocument } from "@/lib/actions";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/hooks/useFetchUserInfo";
-import { Button, ButtonGroup } from "@nextui-org/button";
+import { Button } from "@nextui-org/button";
 export interface NewsData {
   id: string;
   files: string[];
@@ -20,7 +20,7 @@ export interface NewsData {
 const Home: React.FC = () => {
   const [documents, setDocuments] = useState<NewsData[]>([]);
   const router = useRouter();
-  const { userInfo, error, loading } = useUser() ?? {};
+  const { userInfo } = useUser() ?? {};
 
   const fetchDocuments = async () => {
     try {
@@ -39,12 +39,13 @@ const Home: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteDocument(id); // Assuming you have a deleteDocument function
-      await fetchDocuments(); // Refresh the data after deletion
+      await deleteDocument(id);
+      await fetchDocuments();
     } catch (error) {
       console.error("Error deleting document:", error);
     }
   };
+
   return (
     <DefaultLayout>
       <div className="px-2 py-4">
@@ -55,12 +56,10 @@ const Home: React.FC = () => {
             </button>
           )}
         </div>
-        {/* Loop through all documents and display each as a card */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-3">
           {documents.map((doc) => (
             <div key={doc.id} className="card rounded-md bg-base-100 shadow-xl">
               <figure className="w-full">
-                {/* Carousel for images */}
                 <div className="carousel w-full">
                   {doc?.downloadURLs?.map((file, index) => (
                     <div
@@ -107,6 +106,17 @@ const Home: React.FC = () => {
                       Read More
                     </Button>
                   </Link>
+                  <a
+                    href={`https://wa.me/?text=${encodeURIComponent(
+                      `Check out this news: ${doc.title} https://sangliexpressnews.com/news/${doc.id}`
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button color="success" className="rounded-md text-white">
+                      Share on WhatsApp
+                    </Button>
+                  </a>
                   {userInfo?.role === "admin" && (
                     <Button
                       color="danger"
