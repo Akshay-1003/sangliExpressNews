@@ -4,13 +4,13 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { NewsData } from "../../../types/newsData";
 import { MapPinIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
+
 interface DocumentData {
   id: string;
   title: string;
   summary: string;
   downloadURLs: string;
 }
-
 export async function generateMetadata({
   params,
 }: {
@@ -34,7 +34,7 @@ export async function generateMetadata({
       url: `https://sangliexpressnews.com/news/${params.id}`, // Absolute URL
       images: [
         {
-          url: documentData?.downloadURLs[0] || "/images/logo/logo-dark.png",
+          url: documentData?.downloadURLs[0],
           width: 800,
           height: 600,
           alt: documentData.title,
@@ -45,7 +45,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: documentData.title,
       description: documentData.summary,
-      images: [documentData?.downloadURLs[0] || "/images/logo/logo-dark.png"],
+      images: [documentData?.downloadURLs[0]],
     },
   };
 }
