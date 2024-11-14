@@ -11,6 +11,9 @@ import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
 import { TrashIcon } from "@heroicons/react/24/solid";
 import { Spinner } from "@nextui-org/react";
+import { storage } from "../../../firebase/firebase";
+import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+
 const debounce = (func: (...args: any[]) => void, delay: number) => {
   let timeout: ReturnType<typeof setTimeout>;
   return (...args: any[]) => {
@@ -117,49 +120,58 @@ const CreateNews: React.FC = () => {
     try {
       setIsLoading(true);
       const uniqueId = generateUniqueKey();
-
+  
+      // Upload files directly to Firebase
       const uploadedFiles = await Promise.all(
         selectedFiles.map(async (file) => {
-          const formData = new FormData();
-          formData.append("file", file);
-          formData.append("fileName", file.name);
-
-          const response = await fetch("/api/upload", {
-            method: "POST",
-            body: formData,
+          const storageRef = ref(storage, `${new Date().getFullYear()}/${new Date().getMonth() + 1}/${file.name}`);
+          const uploadTask = uploadBytesResumable(storageRef, file);
+  
+          return new Promise((resolve, reject) => {
+            uploadTask.on(
+              "state_changed",
+              (snapshot) => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log(`Upload is ${progress}% done`);
+              },
+              (error) => {
+                console.error("Upload failed:", error);
+                reject(error);
+              },
+              async () => {
+                try {
+                  const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                  resolve({ fileId: storageRef.fullPath, downloadURL });
+                } catch (error) {
+                  console.error("Error getting download URL:", error);
+                  reject(error);
+                }
+              }
+            );
           });
-          if (!response.ok) {
-            setIsLoading(false);
-
-            throw new Error(`File upload failed: ${response.statusText}`);
-          }
-
-          return await response.json();
-        }),
+        })
       );
-
+  
+      // Prepare data to save in Firestore or database
       const fileData = {
         newsId: uniqueId,
         date: new Date().toLocaleDateString(),
-        files: uploadedFiles.map((file) => file.fileId),
+        files: uploadedFiles.map((file:any) => file.fileId),
         ...values,
-        downloadURLs: uploadedFiles.map((file) => file.downloadURL),
+        downloadURLs: uploadedFiles.map((file:any) => file.downloadURL),
       };
-
+  
+      // Save the document in Firestore or your database
       const docId = await createDocument("news", fileData);
-
-      toast.success("News Submitted Successfully!", {
-        position: "bottom-left",
-      });
+  
+      toast.success("News Submitted Successfully!", { position: "bottom-left" });
       setIsLoading(false);
       resetForm();
       router.push("/home");
     } catch (error) {
       setIsLoading(false);
       console.error("Error during form submission:", error);
-      toast.error("An error occurred during submission. Please try again.", {
-        position: "bottom-center",
-      });
+      toast.error("An error occurred during submission. Please try again.", { position: "bottom-center" });
     }
   };
 
