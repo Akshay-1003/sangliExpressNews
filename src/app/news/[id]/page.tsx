@@ -1,5 +1,4 @@
 import { getDocumentById } from "@/lib/actions";
-import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { NewsData } from "../../../types/newsData";
 import { MapPinIcon } from "@heroicons/react/24/solid";
@@ -9,10 +8,12 @@ interface DocumentData {
   id: string;
   title: string;
   summary: string;
-  downloadURLs: string;
+  downloadURLs: string[]; // Updated to be an array of strings
 }
-export async function generateMetadata({ params }:any) {
+
+export async function generateMetadata({ params }: any) {
   const documentData = (await getDocumentById(params.id)) as DocumentData;
+  
   if (!documentData) {
     return {
       title: "News not found",
@@ -28,31 +29,32 @@ export async function generateMetadata({ params }:any) {
       title: documentData.title,
       description: documentData.summary,
       url: `https://sangliexpressnews.com/news/${params.id}`,
-      images: documentData.downloadURLs ? [
-        {
-          url: documentData.downloadURLs[0],
-          width: 800,
-          height: 600,
-          alt: documentData.title,
-        },
-      ] : [],
+      images: documentData.downloadURLs.map((url) => ({
+        url: url,
+        width: 800,
+        height: 600,
+        alt: documentData.title,
+      })),
     },
     twitter: {
       card: "summary_large_image",
       title: documentData.title,
       description: documentData.summary,
-      images: documentData.downloadURLs ? [documentData.downloadURLs[0]] : [],
+      images: documentData.downloadURLs,
     },
   };
 }
 
-
-
 export default async function Page({ params }: { params: { id: string } }) {
   const newsData = (await getDocumentById(params.id)) as NewsData;
+
+  if (!newsData) {
+    return <div>News not found</div>;
+  }
+
   const formatDate = (dateString: any) => {
     const [day, month, year] = dateString.split("/");
-    const date = new Date(`${year}-${month}-${day}`); // Convert to yyyy-mm-dd format
+    const date = new Date(`${year}-${month}-${day}`);
     return date.toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
@@ -61,9 +63,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   };
 
   const paragraphs = newsData.summary.split("\n");
-  if (!newsData) {
-    return <div>News not found</div>;
-  }
+
   return (
     <DefaultLayout>
       <div className="container mx-auto overflow-hidden rounded-lg bg-white px-4 py-8 shadow-lg">
@@ -77,7 +77,6 @@ export default async function Page({ params }: { params: { id: string } }) {
         </div>
 
         <div className="carousel mb-2 w-full">
-          
           {newsData?.downloadURLs?.map((file, index) => (
             <div
               key={index}
@@ -93,13 +92,13 @@ export default async function Page({ params }: { params: { id: string } }) {
               />
               <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
                 <a
-                  href={`#slide-${newsData.id}-${index === 0 ? newsData.files.length - 1 : index - 1}`}
+                  href={`#slide-${newsData.id}-${index === 0 ? newsData.downloadURLs.length - 1 : index - 1}`}
                   className="btn btn-circle"
                 >
                   ❮
                 </a>
                 <a
-                  href={`#slide-${newsData.id}-${(index + 1) % newsData.files.length}`}
+                  href={`#slide-${newsData.id}-${(index + 1) % newsData.downloadURLs.length}`}
                   className="btn btn-circle"
                 >
                   ❯
@@ -115,13 +114,11 @@ export default async function Page({ params }: { params: { id: string } }) {
           </p>
         </div>
 
-        {/* Author and Date */}
         <p className="mb-4 inline-flex items-center text-lg font-semibold text-blue-700">
           <MapPinIcon className="mr-2 h-5 w-5 text-rose-600" />
           {`Sangli Express News  - ${formatDate(newsData.date)}`}
         </p>
 
-        {/* News Summary */}
         <div className="prose-lg prose max-w-none text-justify leading-relaxed">
           <div className="inline-flex items-center text-lg font-semibold">
             <p>{newsData?.reporter}</p>
