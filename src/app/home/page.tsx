@@ -106,9 +106,9 @@ const Home: React.FC = () => {
                       Read More
                     </Button>
                   </Link>
-                  <a
+                  {/* <a
                     href={`https://wa.me/?text=${encodeURIComponent(
-                      `Check out this news: ${doc.title} https://sangliexpressnews.com/news/${doc.id}`
+                      `https://sangliexpressnews.com/news/${doc.id}`
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -116,7 +116,7 @@ const Home: React.FC = () => {
                     <Button color="success" className="rounded-md text-white">
                       Share on WhatsApp
                     </Button>
-                  </a>
+                  </a> */}
                   {userInfo?.role === "admin" && (
                     <Button
                       color="danger"

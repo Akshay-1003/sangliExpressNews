@@ -13,7 +13,7 @@ interface DocumentData {
 
 export async function generateMetadata({ params }: any) {
   const documentData = (await getDocumentById(params.id)) as DocumentData;
-  
+
   if (!documentData) {
     return {
       title: "News not found",
@@ -29,21 +29,24 @@ export async function generateMetadata({ params }: any) {
       title: documentData.title,
       description: documentData.summary,
       url: `https://sangliexpressnews.com/news/${params.id}`,
-      images: documentData.downloadURLs.map((url) => ({
-        url: url,
-        width: 800,
-        height: 600,
-        alt: documentData.title,
-      })),
+      images: [
+        {
+          url: documentData.downloadURLs[0] || "/images/logo/logo-dark.png", // Add fallback here
+          width: 800,
+          height: 600,
+          alt: documentData.title,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title: documentData.title,
       description: documentData.summary,
-      images: documentData.downloadURLs,
+      images: [documentData.downloadURLs[0] || "/images/logo/logo-dark.png"], // Add fallback here
     },
   };
 }
+
 
 export default async function Page({ params }: { params: { id: string } }) {
   const newsData = (await getDocumentById(params.id)) as NewsData;
