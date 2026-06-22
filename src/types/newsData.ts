@@ -7,9 +7,16 @@ export interface NewsData {
     date: string;
     downloadURLs: string[];
     reporter: string;
-    photoCaption: string;
-    summaryHighlightheading: string;
-    summaryHighlight: string;
-    subtitle: string;
+    photoCaption?: string;
+    summaryHighlightheading?: string;
+    summaryHighlight?: string;
+    subtitle?: string;
+    category?: string;
+    location?: string;
+    tags?: string[];
+    createdAt?: string;
+    updatedAt?: string;
+    status?: string;
+    authorId?: string;
   }
   

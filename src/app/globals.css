@@ -19,6 +19,22 @@
 body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-start-rgb));
+  font-family: 'Noto Sans Devanagari', 'Hind', 'Mukta', system-ui, -apple-system, sans-serif;
+}
+
+/* Marathi/Devanagari Typography Support */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Hind:wght@400;500;600;700&display=swap');
+
+.marathi-text {
+  font-family: 'Noto Sans Devanagari', 'Hind', 'Mukta', system-ui, -apple-system, sans-serif;
+  line-height: 1.8;
+  letter-spacing: 0.01em;
+}
+
+.marathi-title {
+  font-family: 'Noto Sans Devanagari', 'Hind', 'Mukta', system-ui, -apple-system, sans-serif;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
 }
 
 @layer utilities {

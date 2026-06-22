@@ -30,6 +30,8 @@ interface FormValues {
   summaryHighlightheading?: string;
   summaryHighlight?: string;
   photoCaption?: string;
+  category?: string;
+  location?: string;
 }
 
 const CreateNews: React.FC = () => {
@@ -120,13 +122,13 @@ const CreateNews: React.FC = () => {
     try {
       setIsLoading(true);
       const uniqueId = generateUniqueKey();
-  
+
       // Upload files directly to Firebase
       const uploadedFiles = await Promise.all(
         selectedFiles.map(async (file) => {
           const storageRef = ref(storage, `${new Date().getFullYear()}/${new Date().getMonth() + 1}/${file.name}`);
           const uploadTask = uploadBytesResumable(storageRef, file);
-  
+
           return new Promise((resolve, reject) => {
             uploadTask.on(
               "state_changed",
@@ -151,7 +153,7 @@ const CreateNews: React.FC = () => {
           });
         })
       );
-  
+
       // Prepare data to save in Firestore or database
       const fileData = {
         newsId: uniqueId,
@@ -159,11 +161,14 @@ const CreateNews: React.FC = () => {
         files: uploadedFiles.map((file:any) => file.fileId),
         ...values,
         downloadURLs: uploadedFiles.map((file:any) => file.downloadURL),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        status: "published",
       };
-  
+
       // Save the document in Firestore or your database
       const docId = await createDocument("news", fileData);
-  
+
       toast.success("News Submitted Successfully!", { position: "bottom-left" });
       setIsLoading(false);
       resetForm();
@@ -185,23 +190,23 @@ const CreateNews: React.FC = () => {
 
   return (
     <DefaultLayout>
-      <div className="mx-auto mt-10 max-w-xl rounded-lg bg-white p-4 shadow-xl">
-        <h2 className="text-gray-800 mb-8 text-center text-3xl font-semibold">
+      <div className="mx-auto mt-4 max-w-2xl rounded-lg bg-white dark:bg-boxdark p-4 md:p-6 shadow-xl">
+        <h2 className="text-gray-800 dark:text-white mb-6 text-center text-2xl md:text-3xl font-semibold">
           Create News
         </h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div>
             <label
               htmlFor="title"
-              className="text-gray-700 block text-sm font-medium"
+              className="text-gray-700 dark:text-gray-300 block text-sm font-medium mb-2"
             >
-              News Title
+              News Title *
             </label>
             <input
               type="text"
               id="title"
               {...register("title", { required: "News title is required." })}
-              className={`border-gray-300 text-gray-700 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${errors.title ? "border-red-500" : ""}`}
+              className={`border-gray-300 dark:border-gray-600 dark:bg-boxdark-2 dark:text-white text-gray-900 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400 dark:placeholder-gray-500 ${errors.title ? "border-red-500" : ""}`}
               placeholder="Enter the news title"
               onChange={(e) =>
                 handleDebouncedInputChange("title", e.target.value)
@@ -218,7 +223,7 @@ const CreateNews: React.FC = () => {
           <div>
             <label
               htmlFor="subtitle"
-              className="text-gray-700 block text-sm font-medium"
+              className="text-gray-700 dark:text-gray-300 block text-sm font-medium mb-2"
             >
               News Subtitle
             </label>
@@ -226,7 +231,7 @@ const CreateNews: React.FC = () => {
               type="text"
               id="subtitle"
               {...register("subtitle")}
-              className="border-gray-300 text-gray-700 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              className="border-gray-300 dark:border-gray-600 dark:bg-boxdark-2 dark:text-white text-gray-900 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400 dark:placeholder-gray-500"
               placeholder="Enter the subtitle of the news"
               onChange={(e) =>
                 handleDebouncedInputChange("subtitle", e.target.value)
@@ -237,8 +242,56 @@ const CreateNews: React.FC = () => {
 
           <div>
             <label
+              htmlFor="category"
+              className="text-gray-700 dark:text-gray-300 block text-sm font-medium mb-2"
+            >
+              Category
+            </label>
+            <select
+              id="category"
+              {...register("category")}
+              className="border-gray-300 dark:border-gray-600 dark:bg-boxdark-2 dark:text-white text-gray-900 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              onChange={(e) =>
+                handleDebouncedInputChange("category", e.target.value)
+              }
+              value={watch("category")}
+            >
+              <option value="">Select a category</option>
+              <option value="Politics">Politics</option>
+              <option value="Local News">Local News</option>
+              <option value="Crime">Crime</option>
+              <option value="Agriculture">Agriculture</option>
+              <option value="Sports">Sports</option>
+              <option value="Education">Education</option>
+              <option value="Business">Business</option>
+              <option value="Breaking News">Breaking News</option>
+            </select>
+          </div>
+
+          <div>
+            <label
+              htmlFor="location"
+              className="text-gray-700 dark:text-gray-300 block text-sm font-medium mb-2"
+            >
+              Location
+            </label>
+            <input
+              type="text"
+              id="location"
+              {...register("location")}
+              className="border-gray-300 dark:border-gray-600 dark:bg-boxdark-2 dark:text-white text-gray-900 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400 dark:placeholder-gray-500"
+              placeholder="Enter the location (e.g., Sangli, Maharashtra)"
+              onChange={(e) =>
+                handleDebouncedInputChange("location", e.target.value)
+              }
+              value={watch("location")}
+            />
+          </div>
+
+          <div>
+            <label
               htmlFor="files"
-              className="text-gray-700 block text-sm font-medium"
+              className="text-gray-700 dark:text-gray-300 block text-sm font-medium mb-2"
             >
               Upload Files
             </label>
@@ -246,14 +299,15 @@ const CreateNews: React.FC = () => {
               type="file"
               id="files"
               multiple
-              className="border-gray-300 bg-gray-50 text-gray-700 mt-2 block w-full cursor-pointer rounded-lg border p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              accept="image/*"
+              className="border-gray-300 bg-gray-50 dark:bg-boxdark-2 dark:border-gray-600 dark:text-white text-gray-700 mt-2 block w-full cursor-pointer rounded-lg border p-3 shadow-sm focus:border-blue-500 focus:ring-blue-500"
               onChange={handleFileChange}
             />
 
             {filePreviews.length > 0 && (
               <div className="mt-4">
-                <p className="text-gray-700 text-sm font-medium">
-                  File Previews:
+                <p className="text-gray-700 dark:text-gray-300 text-sm font-medium mb-2">
+                  Image Previews:
                 </p>
                 <div className="mt-2 grid grid-cols-2 gap-4">
                   {filePreviews.map((preview, index) => (
@@ -283,7 +337,7 @@ const CreateNews: React.FC = () => {
           <div>
             <label
               htmlFor="photoCaption"
-              className="text-gray-700 block text-sm font-medium"
+              className="text-gray-700 dark:text-gray-300 block text-sm font-medium mb-2"
             >
               Photo Caption
             </label>
@@ -291,7 +345,7 @@ const CreateNews: React.FC = () => {
               type="text"
               id="photoCaption"
               {...register("photoCaption")}
-              className="border-gray-300 text-gray-700 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              className="border-gray-300 dark:border-gray-600 dark:bg-boxdark-2 dark:text-white text-gray-900 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400 dark:placeholder-gray-500"
               placeholder="Enter the photo caption"
               onChange={(e) =>
                 handleDebouncedInputChange("photoCaption", e.target.value)
@@ -303,9 +357,9 @@ const CreateNews: React.FC = () => {
           <div>
             <label
               htmlFor="reporter"
-              className="text-gray-700 block text-sm font-medium"
+              className="text-gray-700 dark:text-gray-300 block text-sm font-medium mb-2"
             >
-              Reporter Name
+              Reporter Name *
             </label>
             <input
               type="text"
@@ -313,7 +367,7 @@ const CreateNews: React.FC = () => {
               {...register("reporter", {
                 required: "News reporter is required.",
               })}
-              className={`border-gray-300 text-gray-700 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${errors.reporter ? "border-red-500" : ""}`}
+              className={`border-gray-300 dark:border-gray-600 dark:bg-boxdark-2 dark:text-white text-gray-900 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400 dark:placeholder-gray-500 ${errors.reporter ? "border-red-500" : ""}`}
               placeholder="Enter the reporter's name"
               onChange={(e) =>
                 handleDebouncedInputChange("reporter", e.target.value)
@@ -330,15 +384,15 @@ const CreateNews: React.FC = () => {
           <div>
             <label
               htmlFor="summary"
-              className="text-gray-700 block text-sm font-medium"
+              className="text-gray-700 dark:text-gray-300 block text-sm font-medium mb-2"
             >
-              News Summary
+              News Summary *
             </label>
             <textarea
               id="summary"
-              rows={4}
+              rows={6}
               {...register("summary", { required: "Summary is required." })}
-              className={`border-gray-300 text-gray-700 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 ${errors.summary ? "border-red-500" : ""}`}
+              className={`border-gray-300 dark:border-gray-600 dark:bg-boxdark-2 dark:text-white text-gray-900 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400 dark:placeholder-gray-500 ${errors.summary ? "border-red-500" : ""}`}
               placeholder="Write the news summary here..."
               onChange={(e) =>
                 handleDebouncedInputChange("summary", e.target.value)
@@ -355,7 +409,7 @@ const CreateNews: React.FC = () => {
           <div>
             <label
               htmlFor="summaryHighlightheading"
-              className="text-gray-700 block text-sm font-medium"
+              className="text-gray-700 dark:text-gray-300 block text-sm font-medium mb-2"
             >
               Summary Highlight Heading
             </label>
@@ -363,7 +417,7 @@ const CreateNews: React.FC = () => {
               type="text"
               id="summaryHighlightheading"
               {...register("summaryHighlightheading")}
-              className="border-gray-300 text-gray-700 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              className="border-gray-300 dark:border-gray-600 dark:bg-boxdark-2 dark:text-white text-gray-900 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400 dark:placeholder-gray-500"
               placeholder="Enter the summary highlight heading"
               onChange={(e) =>
                 handleDebouncedInputChange(
@@ -378,7 +432,7 @@ const CreateNews: React.FC = () => {
           <div>
             <label
               htmlFor="summaryHighlight"
-              className="text-gray-700 block text-sm font-medium"
+              className="text-gray-700 dark:text-gray-300 block text-sm font-medium mb-2"
             >
               Summary Highlight
             </label>
@@ -386,7 +440,7 @@ const CreateNews: React.FC = () => {
               type="text"
               id="summaryHighlight"
               {...register("summaryHighlight")}
-              className="border-gray-300 text-gray-700 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              className="border-gray-300 dark:border-gray-600 dark:bg-boxdark-2 dark:text-white text-gray-900 mt-2 block w-full rounded-lg border p-3 shadow-sm focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400 dark:placeholder-gray-500"
               placeholder="Enter the summary highlight"
               onChange={(e) =>
                 handleDebouncedInputChange("summaryHighlight", e.target.value)
@@ -395,13 +449,17 @@ const CreateNews: React.FC = () => {
             />
           </div>
 
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <button
               type="submit"
-              className="inline-block w-2/5 rounded-lg bg-indigo-600 px-6 py-3 font-medium text-white shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              disabled={isLoading}
+              className="inline-block w-full sm:w-1/2 rounded-lg bg-blue-600 px-6 py-3 font-medium text-white shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
-                <span className="loading loading-dots loading-lg"></span>
+                <span className="flex items-center justify-center">
+                  <Spinner size="sm" className="mr-2" />
+                  Submitting...
+                </span>
               ) : (
                 "Submit News"
               )}
@@ -409,7 +467,7 @@ const CreateNews: React.FC = () => {
             <button
               type="button"
               onClick={resetForm}
-              className="bg-gray-200 text-gray-700 hover:bg-gray-300 focus:ring-gray-500 inline-block w-2/5 rounded-lg px-6 py-3 font-medium shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2"
+              className="bg-gray-200 dark:bg-gray-700 dark:text-white text-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 focus:ring-gray-500 inline-block w-full sm:w-1/2 rounded-lg px-6 py-3 font-medium shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2"
             >
               Reset Form
             </button>
